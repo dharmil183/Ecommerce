@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+	<title>Online stationary selling</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1" />
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+	<link rel="stylesheet" type="text/css" href="{% static '/css/main.css' %}">
+	<script type="text/javascript">
+		var user='{{request.user}}'
+
+		function getToken(name) {
+   		var cookieValue = null;
+   		if (document.cookie && document.cookie !== '') {
+      		var cookies = document.cookie.split(';');
+       		for (var i = 0; i < cookies.length; i++) {
+        		var cookie = cookies[i].trim();
+           		// Does this cookie string begin with the name we want?
+           	 	if (cookie.substring(0, name.length + 1) === (name + '='))
+           		{
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+             	   break;
+            }
+        }
+    }
+    return cookieValue;
+}
+	var csrftoken =	getToken('csrftoken');
+
+	function getCookie(name){
+		/*  Split cookie string and get all individual name=value pairs in an array   */
+		var cookieArr = document.cookie.split(";");
+
+
+		/*  Loop through the array elements */
+		for(var i=0;i<cookieArr.length;i++){
+			var cookiePair = cookieArr[i].split("=");
+				/* Removing white space at the beginning of the cookie name and compare it with the given string */
+			if(name==cookiePair[0].trim()){
+			/* Decode the cookie value and return it */
+				return decodeURIComponent(cookiePair[1]);
+			}
+		}
+		/* return null if not found */
+		return null;
+
+	}
+	var cart = JSON.parse(getCookie('cart'))
+	if(cart==undefined){
+		cart={}
+		console.log('Cart was created')
+		document.cookie = 'cart=' + JSON.stringify(cart) + ";domain=;path=/"
+	}
+
+	console.log('Cart:',cart)
+
+	</script>
+
+</head>
+<body>
+
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+	  <a class="navbar-brand" href="{% url 'store' %}">Online stationary selling</a>
+	  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+	    <span class="navbar-toggler-icon"></span>
+	  </button>
+
+	  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+	    <ul class="navbar-nav mr-auto">
+	      <li class="nav-item active">
+	        <a class="nav-link" href="{% url 'store' %}">Store <span class="sr-only">(current)</span></a>
+	      </li>
+
+		  <li class="nav-item active">
+	        <a class="nav-link" href="{% url 'about' %}">Aboutus</a>
+	      </li>
+
+		  <li class="nav-item active">
+	        <a class="nav-link" href="{% url 'contact' %}">Contact Us</a>
+	      </li>
+
+	    </ul>
+
+
+
+
+
+	    <div class="form-inline my-2 my-lg-0">
+	     	<a href="#" class="btn btn-warning">Login</a>
+	     	<a href="{% url 'cart' %}">
+	    		<img  id="cart-icon" src="{% static 'images/cart.png' %}">
+	    	</a>
+	    	<p id="cart-total">{{cartItems}}</p>
+	    </div>
+	  </div>
+	</nav>
+
+		     <div class="container">
+        		    <br>
+				 {% block content %}
+
+
+				 {% endblock content %}
+
+			 </div>
+
+	<!--<footer class="footer" role="contentinfo">-->
+   <!-- 	<div class="container">
+        <section class="footer-info footer-section">
+           <article class="footer-info-col" data-section-type="footer-categories">
+                <p tabindex="0" class="footer-info-heading text-style-3">Products</p>
+                <ul class="footer-info-list text-style-4">
+                                <li>
+                                    <a href="https://www.newchapter.com/products/multivitamins/">Multivitamins</a>
+                                </li>
+                                <li>
+                                    <a href="https://www.newchapter.com/products/multiherbals/">Multiherbals</a>
+                                </li>
+                                <li>
+                                    <a href="https://www.newchapter.com/products/single-vitamins/">Single Vitamins </a>
+                                </li>
+                                <li>
+                                    <a href="https://www.newchapter.com/products/herbals/">Herbals</a>
+                                </li>
+                                <li>
+                                    <a href="https://www.newchapter.com/products/fish-oil/">Fish Oil</a>
+                                </li>
+                                <li>
+                                    <a href="https://www.newchapter.com/products/mushrooms/">Mushrooms</a>
+                                </li>
+                                <li>
+                                    <a href="https://www.newchapter.com/products/probiotics/">Probiotics</a>
+                                </li>
+                                <li>
+                                    <a href="https://www.newchapter.com/products/plant-protein-collagen/">Plant Protein &amp; Collagen</a>
+                                </li>
+                                <li>
+                                    <a href="https://www.newchapter.com/products/calcium-minerals/">Calcium &amp; Minerals</a>
+                                </li>
+                </ul>
+            </article>
+            <hr class="divider-line-mobile">
+            <article class="footer-info-col" data-section-type="footer-webPages">
+						<p tabindex="0" class="footer-info-heading text-style-3">About</p>
+						<ul class="footer-info-list text-style-4">
+								<li>
+									<a href="https://www.newchapter.com/values/">Our Values</a>
+								</li>
+								<li>
+									<a href="https://www.newchapter.com/difference/">Our Difference</a>
+								</li>
+								<li>
+									<a href="https://www.newchapter.com/ferment-facts/">Ferment Facts</a>
+								</li>
+								<li>
+									<a href="https://www.newchapter.com/bcorp/">Certified B Corp</a>
+								</li>
+								<li>
+									<a href="/ingredients/">Ingredients</a>
+								</li>
+								<li>
+									<a href="https://www.newchapter.com/contact/">Contact Us</a>
+								</li>
+								<li>
+									<a href="https://www.newchapter.com/careers/">Careers</a>
+								</li>
+								<li>
+									<a href="https://www.newchapter.com/faq/">FAQ</a>
+								</li>
+						</ul>
+            </article>
+            <hr class="divider-line-mobile">
+            <article class="footer-info-col" data-section-type="footer-webPages">
+						<p tabindex="0" class="footer-info-heading text-style-3">Legal</p>
+						<ul class="footer-info-list text-style-4">
+								<li>
+									<a href="https://www.newchapter.com/terms/">Terms &amp; Conditions</a>
+								</li>
+								<li>
+									<a href="https://www.newchapter.com/rewards-terms-of-use/">Rewards Terms of Use</a>
+								</li>
+								<li>
+									<a href="https://www.newchapter.com/retailer-policy/">Retailer Policy</a>
+								</li>
+								<li>
+									<a href="https://www.newchapter.com/privacy-policy/">Privacy Policy</a>
+								</li>
+								<li>
+									<a href="https://www.newchapter.com/our-guarantee/">Our Guarantee</a>
+								</li>
+								<li>
+									<a href="https://www.newchapter.com/privacy-policy/#do-not-sell">Do Not Sell My Personal Information</a>
+								</li>
+						</ul>
+            </article>
+            <hr class="divider-line-mobile">
+            <article class="footer-info-col" data-section-type="footer-webPages">
+						<p tabindex="0" class="footer-info-heading text-style-3">Resources</p>
+						<ul class="footer-info-list text-style-4 white-space">
+								<li>
+									<a href="https://www.newchapter.com/account.php">My Account</a>
+								</li>
+								<li>
+									<a href="https://www.newchapter.com/store-locator/">Store Locator</a>
+								</li>
+								<li>
+									<a href="https://www.newchapter.com/newscription/">About NewScription™</a>
+								</li>
+								<li>
+									<a href="/rewards/">New Chapter Rewards</a>
+								</li>
+								<li>
+									<a href="/blog/">Wellness Blog</a>
+								</li>
+								<li>
+									<a href="https://www.newchapter.com/newsletter/">Newsletter</a>
+								</li>
+								<li>
+									<a href="/blog/tag/recipes">Recipes</a>
+								</li>
+								<li>
+									<a href="https://www.newchapter.com/canada/">Canadian Products</a>
+								</li>
+								<li>
+									<a href="https://www.newchapter.com/new-labeling-requirements/">New Labeling Requirements</a>
+								</li>
+						</ul>
+            </article>
+            <hr class="divider-line-mobile">
+        </section>
+                <section class="footer-bottom footer-btm">
+            <span class="footer-disclaimer">
+                <div id="fda" class="disclaimer-box statements">
+                    <span>*</span>These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease.
+                </div>
+            </span>
+            <span class="b-corp-certification1">
+                <img class=" lazyloaded" src="https://cdn11.bigcommerce.com/s-zsd73psd0i/content/assets/footer/b-corp-certification-1.png" data-src="https://cdn11.bigcommerce.com/s-zsd73psd0i/content/assets/footer/b-corp-certification-1.png" srcset="https://cdn11.bigcommerce.com/s-zsd73psd0i/content/assets/footer/b-corp-certification-1@2x.png 2x,
+             https://cdn11.bigcommerce.com/s-zsd73psd0i/content/assets/footer/b-corp-certification-1@3x.png 3x" alt="Certified B Corporation logo.">
+            </span>
+        </section>
+        <hr class="divider-line">
+        <section class="footer-bottom footer-down">
+        	<div class="footer-icons">
+                    <div class="footer-copyright">
+                        <p class="powered-by copyright">© Copyright 2020 New Chapter, Inc.</p>
+                    </div>
+        	</div>
+        </section>
+    </div>
+
+</footer>-->
+
+	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+	<script type="text/javascript" src="{% static 'js/cart.js' %}"></script>
+</body>
+</html>
